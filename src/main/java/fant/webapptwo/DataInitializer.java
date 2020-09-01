@@ -2,6 +2,7 @@ package fant.webapptwo;
 
 import fant.webapptwo.services.UserService;
 import fant.webapptwo.entities.User;
+import fant.webapptwo.services.ListingService;
 import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Initialized;
@@ -21,6 +22,9 @@ public class DataInitializer {
     
     @Inject
     UserService us;
+    
+    @Inject
+    ListingService ls;
     
     @PersistenceContext
     EntityManager em;
@@ -66,6 +70,14 @@ public class DataInitializer {
             }
             
             System.out.print("");
+            
+            User user = us.findUserNew(14);
+            //ls.createListing("kkona2", "KOKOKOKOK2OKOKO", "JSJ2SJSJSJSJS", user); //uncomment to add listings
+            System.out.print(ls.findListing(14).getTitle());
+            ls.deleteListing(13);
+            
+            
+            
             
             /*
             System.out.println("Trying to change password");

@@ -79,7 +79,7 @@ public class UserService {
         User user = tempUser.get();
         em.remove(user);
         if(getUser(username) == null){
-            System.out.print("User with id: " + username + " Has successfully been deleted");
+            System.out.print("User with username: " + username + " Has successfully been deleted");
         }
         
     }
