@@ -1,5 +1,5 @@
-fant\webapptwo\User.class
+fant\webapptwo\services\UserService.class
 fant\webapptwo\JAXRSConfiguration.class
 fant\webapptwo\DataInitializer.class
 fant\webapptwo\resources\JavaEE8Resource.class
-fant\webapptwo\UserService.class
+fant\webapptwo\entities\User.class

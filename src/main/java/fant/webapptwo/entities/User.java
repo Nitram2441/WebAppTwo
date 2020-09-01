@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package fant.webapptwo;
+package fant.webapptwo.entities;
 
 import java.io.Serializable;
 import java.util.List;
@@ -30,6 +30,7 @@ import javax.persistence.Table;
 @NamedQueries({
     @NamedQuery(name = "User.all" ,query = "select us from User us"),
     @NamedQuery(name = "User.byId", query = "select us from User us where us.id = :id"),
+    @NamedQuery(name = "User.byUsername", query = "select us from User us where us.username = :username")
     //@NamedQuery(name = "User.UpdatePassword", query = "update us.password from User us where us.id = :id")
 })
 public class User implements Serializable{
@@ -82,10 +83,10 @@ public class User implements Serializable{
     public String getUserMail() {
         return userMail;
     }
-/*
+
     public void setPassword(String password) {
         this.password = password;
     }
-    */
+    
     
 }
