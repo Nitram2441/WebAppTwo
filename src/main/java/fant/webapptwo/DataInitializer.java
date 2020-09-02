@@ -31,7 +31,7 @@ public class DataInitializer {
     
     public void execute(@Observes @Initialized(ApplicationScoped.class) Object event){
     
-        us.createUser("Ko", "okokok", "12345678", "User", "valid@email.com");//tested bean validation for email
+        //us.createUser("Ko", "okokok", "12345678", "User", "valid@email.com");//tested bean validation for email
 
         //if(dataService.getAllUsers().isEmpty()){
         /*
