@@ -45,8 +45,11 @@ public class Listing implements Serializable{
     @Column(name="media_source")
     String mediaSource; //is gonna be the path to the picture(S)
     
-    @Column(name="buyer_id")
-    int buyerId; //gonna be id of person who buys it hopefully i can update it from null to an id when sold
+    //@Column(name="buyer_id")
+    @ManyToOne
+    @JoinColumn(name="buyer_id", referencedColumnName = "id")
+    User buyer;        
+    //int buyerId; //gonna be id of person who buys it hopefully i can update it from null to an id when sold
     //@Column(name="seller_id")
     //int sellerId;
     
@@ -89,7 +92,7 @@ public class Listing implements Serializable{
     }
 
     public int getBuyerId() {
-        return buyerId;
+        return buyer.getId();
     }
 
     public int getSellerId() {
@@ -100,6 +103,12 @@ public class Listing implements Serializable{
     public User getUser() {
         return user;
     }
+    
+    
+    public void setBuyer(User buyer){
+        this.buyer = buyer;
+    }
+
     
     
 }

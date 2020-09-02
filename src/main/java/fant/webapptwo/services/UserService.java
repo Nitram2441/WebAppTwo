@@ -8,6 +8,7 @@ package fant.webapptwo.services;
 import fant.webapptwo.entities.User;
 import java.util.List;
 import java.util.Optional;
+import javax.ejb.Stateless;
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -18,7 +19,8 @@ import javax.transaction.Transactional;
  * @author marti
  */
 
-@ApplicationScoped
+@Stateless
+//@ApplicationScoped
 public class UserService {
     
     @PersistenceContext(unitName = "my_persistence_unit")

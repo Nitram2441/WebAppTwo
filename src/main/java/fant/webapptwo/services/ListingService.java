@@ -9,6 +9,7 @@ import fant.webapptwo.entities.Listing;
 import fant.webapptwo.entities.User;
 import java.util.List;
 import java.util.Optional;
+import javax.ejb.Stateless;
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -18,7 +19,8 @@ import javax.transaction.Transactional;
  *
  * @author marti
  */
-@ApplicationScoped
+//@ApplicationScoped
+@Stateless
 public class ListingService {
     
     @PersistenceContext(unitName = "my_persistence_unit")
@@ -55,6 +57,12 @@ public class ListingService {
         Listing listing = findListing(id);
         //System.out.println(listing.getTitle());
         em.remove(listing);
+    }
+    
+    public Listing addBuyer(int id, User user){
+        Listing listing = findListing(id);
+        listing.setBuyer(user);
+        return listing;
     }
 }
 

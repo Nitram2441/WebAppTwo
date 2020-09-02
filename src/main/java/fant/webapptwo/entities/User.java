@@ -16,6 +16,8 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Size;
 
 /**
  * kilder:
@@ -38,14 +40,18 @@ public class User implements Serializable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
     int id;
+    @Size(min = 2, max = 50)
     @Column(name="name")
     String name;
+    @Size(min = 6, max = 25)
     @Column(name="username")
     String username;
+    @Size(min = 8, max = 50)
     @Column(name="user_password")
     String password;
     @Column(name="user_group")
     String userGroup;
+    @Email(message = "Email is not valid") //Works!
     @Column(name="user_mail")
     String userMail;
 

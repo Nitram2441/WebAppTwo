@@ -31,10 +31,10 @@ public class DataInitializer {
     
     public void execute(@Observes @Initialized(ApplicationScoped.class) Object event){
     
-        
+        us.createUser("Ko", "okokok", "12345678", "User", "valid@email.com");//tested bean validation for email
 
         //if(dataService.getAllUsers().isEmpty()){
-        
+        /*
             if(us.getUser("deleteMe") == null){
                 if(us.createUser("DeleteMe", "deleteMe", "password", "user", "mail") != null){
                     System.out.println("Created user to test delete");
@@ -71,10 +71,15 @@ public class DataInitializer {
             
             System.out.print("");
             
+            us.changePassword("daggy112", "NyttPassord1");
+            
+            
             User user = us.findUserNew(14);
-            //ls.createListing("kkona2", "KOKOKOKOK2OKOKO", "JSJ2SJSJSJSJS", user); //uncomment to add listings
-            System.out.print(ls.findListing(14).getTitle());
-            ls.deleteListing(13);
+        */
+            //ls.createListing("speedy", "KOKOKOKOK2OKOKO", "JSJ2SJSJSJSJS", user); //uncomment to add listings
+            //System.out.print(ls.findListing(14).getTitle());
+            //ls.deleteListing(4); //Works!
+            //ls.addBuyer(15, user); //Works!
             
             
             
