@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -19,7 +20,12 @@ import lombok.EqualsAndHashCode;
  */
 @Entity
 @Data @EqualsAndHashCode(callSuper = false)
+/*
+@NamedQuery(name = "MediaObject.findAllMediaObjects",
+        query = "select m from MediaObjects m")
+*/
 public class MediaObject extends AbstractDomain {
+    public static final String FIND_ALL_MEDIA_OBJECTS = "MediaObject.findAllMediaObjects";
     @Id
     String id;
     
