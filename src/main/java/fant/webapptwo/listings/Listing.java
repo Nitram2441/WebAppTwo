@@ -29,8 +29,8 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Data @EqualsAndHashCode(exclude = {"seller"}, callSuper = false)
 @AllArgsConstructor
-//@NamedQuery(name = "Listing.findByUserId",
-       // query = "select l from Listing l where l.seller.useridid = :userId")
+@NamedQuery(name = "Listing.findById",
+        query = "select l from Listing l where l.id = :id")
 @NamedQuery(name = "Listing.findAllListings",
         query = "select l from Listing l")
 public class Listing extends AbstractDomain{
@@ -51,6 +51,10 @@ public class Listing extends AbstractDomain{
     @ManyToOne
     @JoinColumn(name="seller_id", referencedColumnName = "userid")
     User seller;
+    
+    @ManyToOne
+    @JoinColumn(name="buyer_id", referencedColumnName = "userid")
+    User buyer;
     
     public Listing(String title, String description, User seller){
         this.title = title;

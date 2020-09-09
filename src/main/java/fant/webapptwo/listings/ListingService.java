@@ -23,6 +23,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -80,9 +81,22 @@ public class ListingService {
         return Response.ok(listing).build();
     }
     
+    @PUT
+    @Path("purchase")
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({Group.USER})
+    public Response addBuyer(@FormParam("id") int id){
+        Listing listing = findListingById(id);
+        User buyer = em.find(User.class, sc.getUserPrincipal().getName());
+        listing.setBuyer(buyer);
+        em.merge(listing);
+        return Response.ok(listing).build();
+    }
     
-    
-    
+    public Listing findListingById(int id){
+        Listing listing = em.createNamedQuery("Listing.findById", Listing.class).setParameter("id", id).getResultList().stream().findFirst().get();
+        return listing;
+    }
     
     @POST
     @Path("send")
@@ -114,7 +128,7 @@ public class ListingService {
     public Response testImage(FormDataMultiPart multiPart){
         List<FormDataBodyPart> images = multiPart.getFields("image");
         if(images != null){
-            System.out.println("Images list is not null...");
+            System.out.println("Managed to send picture");
         }
         return Response.ok().build();
     }
