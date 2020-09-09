@@ -19,7 +19,7 @@ public abstract class AbstractDomain implements Serializable {
     Timestamp version;
     
     @Column(nullable = false, updatable = false)
-    final private Timestamp created;
+    final Timestamp created;
     
     public AbstractDomain() {
         this.created = new Timestamp(System.currentTimeMillis());

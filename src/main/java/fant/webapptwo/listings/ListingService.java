@@ -14,6 +14,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.annotation.security.DeclareRoles;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -49,6 +52,7 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 
 @Path("listings")
 @Stateless
+@DeclareRoles({Group.USER})
 public class ListingService {
     @Context
     SecurityContext sc;
@@ -106,7 +110,9 @@ public class ListingService {
     @Path("send")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @RolesAllowed({Group.USER})
-    public Response sendPhoto(FormDataMultiPart multiPart) throws IOException{
+    public Response sendPhoto(FormDataMultiPart multiPart){
+        System.out.println("step 1");
+        try{
         List<FormDataBodyPart> images = multiPart.getFields("image");
         User user = em.find(User.class, sc.getUserPrincipal().getName());
         if (images != null){
@@ -123,17 +129,20 @@ public class ListingService {
                 System.out.println("Tried to persist photo...");
             }
         }
+        
+        }
+        catch(IOException ex){
+            Logger.getLogger(ListingService.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return Response.ok().build();
     }
     
     @POST
-    @Path("testUpload")
+    @Path("testpic")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public Response testImage(FormDataMultiPart multiPart){
+    @RolesAllowed({Group.USER})
+    public Response sendPic(FormDataMultiPart multiPart){
         List<FormDataBodyPart> images = multiPart.getFields("image");
-        if(images != null){
-            System.out.println("Managed to send picture");
-        }
         return Response.ok().build();
     }
     
