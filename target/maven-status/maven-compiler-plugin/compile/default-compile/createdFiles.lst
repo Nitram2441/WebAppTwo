@@ -2,6 +2,8 @@ fant\webapptwo\resources\DataSourceProducer.class
 fant\webapptwo\auth\Group.class
 fant\webapptwo\auth\KeyService.class
 fant\webapptwo\listings\ListingOnStartup.class
+fant\webapptwo\listings\MailService.class
+fant\webapptwo\listings\MailService$1.class
 fant\webapptwo\JAXRSConfiguration.class
 fant\webapptwo\listings\Listing.class
 fant\webapptwo\auth\User.class

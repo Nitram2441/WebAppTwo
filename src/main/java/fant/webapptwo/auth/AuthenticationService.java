@@ -185,6 +185,17 @@ public class AuthenticationService {
             return Response.ok(em.merge(user)).build();
         }
     }
+    
+    @PUT
+    @Path("adddetails")
+    @RolesAllowed(value = {Group.USER})
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response addDetails(@FormParam("email") String email){
+        User user = em.find(User.class, principal.getName());
+        user.setEmail(email);
+        em.merge(user);
+        return Response.ok(user).build();
+    }
     //Just for testing purpouses
     @POST
     @Path("createadmin")

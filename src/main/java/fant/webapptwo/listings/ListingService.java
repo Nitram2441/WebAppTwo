@@ -60,6 +60,9 @@ public class ListingService {
     @ConfigProperty(name = "photo.storage.path", defaultValue = "listingphotos")
     String photoPath;
     
+    @Inject
+    MailService ms;
+    
     @GET
     @Path("getlistings")
     //@Produces(MediaType.APPLICATION_JSON))
@@ -90,6 +93,7 @@ public class ListingService {
         User buyer = em.find(User.class, sc.getUserPrincipal().getName());
         listing.setBuyer(buyer);
         em.merge(listing);
+        //ms.sendEmail(listing.seller.getEmail(), "One of your items has been sold", listing.getTitle());//virker men fjernet midlertidig fordi jeg fjernet mail og passord i config
         return Response.ok(listing).build();
     }
     
