@@ -34,7 +34,7 @@ public class AuthRunOnStartup {
             em.persist(new Group(Group.USER));
             em.persist(new Group(Group.ADMIN));
         }
-        
+        /*
         User user = new User();
         user.setUserid("admin1");
         user.setPassword(hasher.generate("admin".toCharArray()));
@@ -45,7 +45,7 @@ public class AuthRunOnStartup {
 
         em.merge(user);
         
-        
+        */
 
     }
     
