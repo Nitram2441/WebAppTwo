@@ -45,6 +45,8 @@ public class Listing extends AbstractDomain{
     
     String description;
     
+    int price; //can be null cause sometimes you'd want people to bid on your item instead of selling at a set price
+    
     @JsonbTypeAdapter(MediaObjectAdapter.class)
     @OneToMany
     List<MediaObject> photos;
@@ -57,10 +59,11 @@ public class Listing extends AbstractDomain{
     @JoinColumn(name="buyer_id", referencedColumnName = "userid")
     User buyer;
     
-    public Listing(String title, String description, User seller){
+    public Listing(String title, String description, User seller, int price){
         this.title = title;
         this.description = description;
         this.seller = seller;
+        this.price = price;
     }
     
     public void addPhoto(MediaObject photo){

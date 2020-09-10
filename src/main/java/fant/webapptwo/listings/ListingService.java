@@ -24,6 +24,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -97,7 +98,8 @@ public class ListingService {
     @RolesAllowed({Group.USER})
     public Response addListingWithPic(
             @NotNull @NotEmpty(message = ("Title cannot be empty")) @FormDataParam("title") String title,
-            @NotNull @NotEmpty(message = ("Description cannot be empty."))@FormDataParam("description") String description,
+            @NotNull @NotEmpty(message = ("Description cannot be empty"))@FormDataParam("description") String description,
+            @NotNull @Positive (message = ("Must be a valid price")) @FormDataParam("price") int price,
             FormDataMultiPart multiPart){
         
         MediaObject photo = null;
@@ -106,7 +108,7 @@ public class ListingService {
             
             List<FormDataBodyPart> images = multiPart.getFields("image");
             User user = em.find(User.class, sc.getUserPrincipal().getName());
-            listing = new Listing(title, description, user);
+            listing = new Listing(title, description, user, price);
             if (images != null){
                 for(FormDataBodyPart part : images){
                     InputStream is = part.getEntityAs(InputStream.class);
