@@ -7,6 +7,7 @@ package fant.webapptwo.listings;
 
 import fant.webapptwo.auth.User;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.json.bind.annotation.JsonbTypeAdapter;
 import javax.persistence.Column;
@@ -60,6 +61,13 @@ public class Listing extends AbstractDomain{
         this.title = title;
         this.description = description;
         this.seller = seller;
+    }
+    
+    public void addPhoto(MediaObject photo){
+        if(this.photos == null){
+            this.photos = new ArrayList<>();
+        }
+        this.photos.add(photo);
     }
     
     public Listing(){

@@ -88,6 +88,46 @@ public class ListingService {
         return Response.ok(listing).build();
     }
     
+    @POST
+    @Path("createwithpicture")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({Group.USER})
+    public Response addListingWithPic(@FormDataParam("title") String title,
+            @FormDataParam("description") String description,
+            FormDataMultiPart multiPart){
+        
+        MediaObject photo = null;
+        Listing listing = null;
+        try{
+            
+            List<FormDataBodyPart> images = multiPart.getFields("image");
+            User user = em.find(User.class, sc.getUserPrincipal().getName());
+            listing = new Listing(title, description, user);
+            if (images != null){
+                for(FormDataBodyPart part : images){
+                    InputStream is = part.getEntityAs(InputStream.class);
+                    ContentDisposition meta = part.getContentDisposition();
+                    String pid = UUID.randomUUID().toString();
+                    Files.createDirectories(Paths.get(getPhotoPath()));
+                    Files.copy(is, Paths.get(getPhotoPath(), pid));
+                    
+                    photo = new MediaObject(pid, user, meta.getFileName(), meta.getSize(), meta.getType());
+                    em.persist(photo);
+                    listing.addPhoto(photo);
+                    
+                }
+            }
+        em.persist(listing);
+        }
+        catch(IOException ex){
+            Logger.getLogger(ListingService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return Response.ok(listing).build();
+    }
+    
+    
+    
     @PUT
     @Path("purchase")
     @Produces(MediaType.APPLICATION_JSON)
