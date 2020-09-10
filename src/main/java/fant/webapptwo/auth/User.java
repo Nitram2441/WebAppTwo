@@ -35,6 +35,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import static fant.webapptwo.auth.User.FIND_ALL_USERS;
 import static fant.webapptwo.auth.User.FIND_USER_BY_IDS;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 
 /**
@@ -57,10 +60,14 @@ public class User implements Serializable {
         ACTIVE, INACTIVE
     }
 
+    
     @Id
+    @NotNull(message = "Id cannot be null")
     String userid;
 
+    
     @JsonbTransient
+    //@Size(min = 8, message = "Password must be at least 8 characters")
     String password;
 
     @Version
@@ -82,6 +89,8 @@ public class User implements Serializable {
     String middleName;
     String lastName;
     String phoneNumber;
+    
+    @Email(message = "Email must be valid")
     String email;
 
     @ElementCollection(fetch = FetchType.LAZY)

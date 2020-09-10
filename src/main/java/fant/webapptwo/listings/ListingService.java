@@ -22,6 +22,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -73,7 +75,7 @@ public class ListingService {
     public List getAllListings(){
         return em.createNamedQuery("Listing.findAllListings", Listing.class).getResultList();
     }
-    
+    /* Not gonna use this one
     @POST
     @Path("create")
    // @Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -87,14 +89,15 @@ public class ListingService {
         em.persist(listing);
         return Response.ok(listing).build();
     }
-    
+    */
     @POST
     @Path("createwithpicture")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({Group.USER})
-    public Response addListingWithPic(@FormDataParam("title") String title,
-            @FormDataParam("description") String description,
+    public Response addListingWithPic(
+            @NotNull @NotEmpty(message = ("Title cannot be empty")) @FormDataParam("title") String title,
+            @NotNull @NotEmpty(message = ("Description cannot be empty."))@FormDataParam("description") String description,
             FormDataMultiPart multiPart){
         
         MediaObject photo = null;

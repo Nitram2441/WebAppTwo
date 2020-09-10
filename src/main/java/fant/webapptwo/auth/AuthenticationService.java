@@ -45,6 +45,8 @@ import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import fant.webapptwo.resources.DataSourceProducer;
 import java.util.List;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Size;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
@@ -169,7 +171,9 @@ public class AuthenticationService {
     @POST
     @Path("create")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createUser(@FormParam("uid") String uid, @FormParam("pwd") String pwd) {
+    public Response createUser(
+            @Size(min = 6, message = ("Username must be 6 characters or more"))@FormParam("uid") String uid, 
+            @Size(min = 8, message = ("Password myst be 8 characters or more"))@FormParam("pwd") String pwd) {
         
         User user = em.find(User.class, uid);
         if (user != null) {
@@ -190,7 +194,8 @@ public class AuthenticationService {
     @Path("adddetails")
     @RolesAllowed(value = {Group.USER})
     @Produces(MediaType.APPLICATION_JSON)
-    public Response addDetails(@FormParam("email") String email){
+    public Response addDetails(
+            @Email @FormParam("email") String email){
         User user = em.find(User.class, principal.getName());
         user.setEmail(email);
         em.merge(user);
@@ -342,12 +347,8 @@ public class AuthenticationService {
     @Path("changepassword")
     @RolesAllowed(value = {Group.USER})
     public Response changePassword(@QueryParam("uid") String uid,
-            @QueryParam("pwd") String password,
+            @Size(min = 8, message = ("New password must be at least 8 characters long."))@QueryParam("pwd") String password,
             @Context SecurityContext sc) {
-        System.out.println(uid);
-        System.out.println("Virk da for faaaaaan");
-        System.out.println(password);
-        //System.out.println(sc);
         String authuser = sc.getUserPrincipal() != null ? sc.getUserPrincipal().getName() : null;
         if (authuser == null || uid == null || (password == null || password.length() < 3)) {
             log.log(Level.SEVERE, "Failed to change password on user {0}", uid);
