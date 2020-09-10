@@ -76,17 +76,9 @@ public class AuthenticationService {
     @ConfigProperty(name = "mp.jwt.verify.issuer", defaultValue = "issuer")
     String issuer;
 
-    /** 
-     * The application server will inject a DataSource as a way to communicate 
-     * with the database.
-     */
     @Resource(lookup = DataSourceProducer.JNDI_NAME)
     DataSource dataSource;
-    
-    /** 
-     * The application server will inject a EntityManager as a way to communicate 
-     * with the database via JPA.
-     */
+
     @PersistenceContext
     EntityManager em;
 
@@ -157,17 +149,6 @@ public class AuthenticationService {
         }
     }
 
-    /**
-     * Does an insert into the AUSER and AUSERGROUP tables. It creates a SHA-256
-     * hash of the password and Base64 encodes it before the user is created in
-     * the database. The authentication system will read the AUSER table when
-     * doing an authentication.
-     *
-     * @param uid
-     * @param pwd
-     * @return
-     */
-    //TODO add support for mail, name, phone number with correct bean validation
     @POST
     @Path("create")
     @Produces(MediaType.APPLICATION_JSON)
@@ -178,6 +159,7 @@ public class AuthenticationService {
         User user = em.find(User.class, uid);
         if (user != null) {
             log.log(Level.INFO, "user already exists {0}", uid);
+            
             return Response.status(Response.Status.BAD_REQUEST).build();
         } else {
             user = new User();
@@ -219,29 +201,9 @@ public class AuthenticationService {
             Group userGroup = em.find(Group.class, Group.USER);
             user.getGroups().add(adminGroup);
             user.getGroups().add(userGroup);
-            System.out.println(user.userid);
-            System.out.println(user.password);
             return Response.ok(em.merge(user)).build();
         }
     }
-/*
-    public User createUser(String uid, String pwd, String firstName, String lastName) {
-        User user = em.find(User.class, uid);
-        if (user != null) {
-            log.log(Level.INFO, "user already exists {0}", uid);
-            throw new IllegalArgumentException("User " + uid + " already exists");
-        } else {
-            user = new User();
-            user.setUserid(uid);
-            user.setPassword(hasher.generate(pwd.toCharArray()));
-            user.setFirstName(firstName);
-            user.setLastName(lastName);
-            Group usergroup = em.find(Group.class, Group.USER);
-            user.getGroups().add(usergroup);
-            return em.merge(user);
-        }        
-    }
-*/
     
     /**
      *
@@ -279,23 +241,9 @@ public class AuthenticationService {
         User user = em.find(User.class, uid);
         Group group = em.find(Group.class, role);
         if(!user.getGroups().contains(group)){
-            System.out.println("Did we get here?");
             user.groups.add(group);
             em.merge(user);
         }
-/*i had to cut this out because while it worked, i had to redeploy the project for the changes to take place
-        try (Connection c = dataSource.getConnection();
-             PreparedStatement psg = c.prepareStatement(INSERT_USERGROUP)) {
-            psg.setString(1, role);
-            psg.setString(2, uid);
-            System.out.println(uid);
-            System.out.println(role);
-            psg.executeUpdate();
-        } catch (SQLException ex) {
-            log.log(Level.SEVERE, null, ex);
-            return Response.status(Response.Status.BAD_REQUEST).build();
-        }
-*/
         return Response.ok(user).build();
     }
 
@@ -337,22 +285,9 @@ public class AuthenticationService {
         User user = em.find(User.class, uid);
         Group group = em.find(Group.class, role);
         if(user.getGroups().contains(group)){
-            System.out.println("Did we get here?");
             user.groups.remove(group);
             em.merge(user);
         }
-        /* i had to cut this out because while it worked, i had to redeploy the project for the changes to take place
-        try (Connection c = dataSource.getConnection();
-                PreparedStatement psg = c.prepareStatement(DELETE_USERGROUP)) {
-            psg.setString(1, role);
-            psg.setString(2, uid);
-            psg.executeUpdate();
-        } catch (SQLException ex) {
-            log.log(Level.SEVERE, null, ex);
-            return Response.status(Response.Status.BAD_REQUEST).build();
-        }
-        */
-        //System.out.println(em.createNamedQuery(User.FIND_ALL_USERS, User.class).getResultList());
         return Response.ok(user).build();
     }
 
@@ -372,7 +307,6 @@ public class AuthenticationService {
         String authuser = sc.getUserPrincipal() != null ? sc.getUserPrincipal().getName() : null;
         if (authuser == null || uid == null || (password == null || password.length() < 3)) {
             log.log(Level.SEVERE, "Failed to change password on user {0}", uid);
-            System.out.println("Something is not being registered by the server");
             return Response.status(Response.Status.BAD_REQUEST).build();
             
         }
@@ -386,10 +320,7 @@ public class AuthenticationService {
             User user = em.find(User.class, uid);
             user.setPassword(hasher.generate(password.toCharArray()));
             em.merge(user);
-            System.out.println("Password should be changed");
             return Response.ok().build();
         }
     }
-    
-
 }

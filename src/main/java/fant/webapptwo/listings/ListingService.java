@@ -76,21 +76,7 @@ public class ListingService {
     public List getAllListings(){
         return em.createNamedQuery("Listing.findAllListings", Listing.class).getResultList();
     }
-    /* Not gonna use this one
-    @POST
-    @Path("create")
-   // @Consumes(MediaType.MULTIPART_FORM_DATA)
-    @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({Group.USER})
-    public Response addListing(@FormParam("title") String title,
-            @FormParam("description") String description){
-        Listing listing;
-        User user = em.find(User.class, sc.getUserPrincipal().getName());
-        listing = new Listing(title, description, user);
-        em.persist(listing);
-        return Response.ok(listing).build();
-    }
-    */
+    
     @POST
     @Path("createwithpicture")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -157,57 +143,28 @@ public class ListingService {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({Group.USER})
     public Response sendPhoto(FormDataMultiPart multiPart){
-        System.out.println("step 1");
         MediaObject photo = null;
-        try{
-            
-        List<FormDataBodyPart> images = multiPart.getFields("image");
-        User user = em.find(User.class, sc.getUserPrincipal().getName());
-        if (images != null){
-            
-            System.out.println("Seems like the server noticed a picture...");
-            //System.out.println(images.size());
-            for(FormDataBodyPart part : images){
-                //System.out.println("entered for loop");
-                InputStream is = part.getEntityAs(InputStream.class);
-                ContentDisposition meta = part.getContentDisposition();
-                System.out.println(meta.getFileName());
-                //System.out.println(Paths.get(getPhotoPath));
-                System.out.println(photoPath);
-                String pid = UUID.randomUUID().toString();
-                Files.createDirectories(Paths.get(getPhotoPath()));
-                Files.copy(is, Paths.get(getPhotoPath(), pid));
+        try{  
+            List<FormDataBodyPart> images = multiPart.getFields("image");
+            User user = em.find(User.class, sc.getUserPrincipal().getName());
+            if (images != null){
+                for(FormDataBodyPart part : images){
+                    InputStream is = part.getEntityAs(InputStream.class);
+                    ContentDisposition meta = part.getContentDisposition();
+                    String pid = UUID.randomUUID().toString();
+                    Files.createDirectories(Paths.get(getPhotoPath()));
+                    Files.copy(is, Paths.get(getPhotoPath(), pid));
                 
-                photo = new MediaObject(pid, user, meta.getFileName(), meta.getSize(), meta.getType());
-                System.out.println(photo.name);
-                em.persist(photo);
-                System.out.println("Tried to persist photo...");
+                    photo = new MediaObject(pid, user, meta.getFileName(), meta.getSize(), meta.getType());
+                    em.persist(photo);
+                    }
+                }
             }
-        }
-        
-        }
         catch(IOException ex){
             Logger.getLogger(ListingService.class.getName()).log(Level.SEVERE, null, ex);
         }
         return Response.ok(photo).build();
     }
-    /*
-    @POST
-    @Path("testpic")
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-    @RolesAllowed({Group.USER})
-    public Response sendPic(FormDataMultiPart multiPart){
-        List<FormDataBodyPart> images = multiPart.getFields("image");
-        return Response.ok().build();
-    }
-    */
-    /*
-    @GET
-    @Path("printimages")
-    public List<MediaObject> getAllUsers(){
-        return em.createNamedQuery(MediaObject.FIND_ALL_MEDIA_OBJECTS, MediaObject.class).getResultList();
-    }
-*/
     
     @GET
     @Path("image/{name}")
@@ -227,8 +184,6 @@ public class ListingService {
                               .toOutputStream(os);
                 }
             };
-
-            // Ask the browser to cache the image for 24 hours
             CacheControl cc = new CacheControl();
             cc.setMaxAge(86400);
             cc.setPrivate(true);
@@ -238,8 +193,7 @@ public class ListingService {
             return Response.status(Status.NOT_FOUND).build();
         }
     }  
-    
-    
+
     private String getPhotoPath() {
             return photoPath;
     }

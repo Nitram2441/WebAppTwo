@@ -45,7 +45,7 @@ public class Listing extends AbstractDomain{
     
     String description;
     
-    int price; //can be null cause sometimes you'd want people to bid on your item instead of selling at a set price
+    int price;
     
     @JsonbTypeAdapter(MediaObjectAdapter.class)
     @OneToMany
