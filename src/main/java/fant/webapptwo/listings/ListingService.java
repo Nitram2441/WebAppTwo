@@ -191,7 +191,7 @@ public class ListingService {
         }
         return Response.ok(photo).build();
     }
-    
+    /*
     @POST
     @Path("testpic")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -200,6 +200,7 @@ public class ListingService {
         List<FormDataBodyPart> images = multiPart.getFields("image");
         return Response.ok().build();
     }
+    */
     /*
     @GET
     @Path("printimages")

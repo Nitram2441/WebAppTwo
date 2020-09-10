@@ -215,14 +215,16 @@ public class AuthenticationService {
             user = new User();
             user.setUserid(uid);
             user.setPassword(hasher.generate(pwd.toCharArray()));
-            Group usergroup = em.find(Group.class, Group.ADMIN);
-            user.getGroups().add(usergroup);
+            Group adminGroup = em.find(Group.class, Group.ADMIN);
+            Group userGroup = em.find(Group.class, Group.USER);
+            user.getGroups().add(adminGroup);
+            user.getGroups().add(userGroup);
             System.out.println(user.userid);
             System.out.println(user.password);
             return Response.ok(em.merge(user)).build();
         }
     }
-
+/*
     public User createUser(String uid, String pwd, String firstName, String lastName) {
         User user = em.find(User.class, uid);
         if (user != null) {
@@ -239,7 +241,7 @@ public class AuthenticationService {
             return em.merge(user);
         }        
     }
-
+*/
     
     /**
      *
@@ -255,7 +257,7 @@ public class AuthenticationService {
     
     @GET
     @Path("users")
-    //@RolesAllowed(value = {Group.USER})
+    @RolesAllowed(value = {Group.ADMIN})
     public List<User> getAllUsers(){
         return em.createNamedQuery(User.FIND_ALL_USERS, User.class).getResultList();
     }
@@ -273,7 +275,15 @@ public class AuthenticationService {
         if (!roleExists(role)) {
             return Response.status(Response.Status.FORBIDDEN).build();
         }
-
+        
+        User user = em.find(User.class, uid);
+        Group group = em.find(Group.class, role);
+        if(!user.getGroups().contains(group)){
+            System.out.println("Did we get here?");
+            user.groups.add(group);
+            em.merge(user);
+        }
+/*i had to cut this out because while it worked, i had to redeploy the project for the changes to take place
         try (Connection c = dataSource.getConnection();
              PreparedStatement psg = c.prepareStatement(INSERT_USERGROUP)) {
             psg.setString(1, role);
@@ -285,8 +295,8 @@ public class AuthenticationService {
             log.log(Level.SEVERE, null, ex);
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
-
-        return Response.ok().build();
+*/
+        return Response.ok(user).build();
     }
 
     /**
@@ -317,12 +327,21 @@ public class AuthenticationService {
      */
     @PUT
     @Path("removerole")
+    @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed(value = {Group.ADMIN})
     public Response removeRole(@QueryParam("uid") String uid, @QueryParam("role") String role) {
         if (!roleExists(role)) {
             return Response.status(Response.Status.FORBIDDEN).build();
         }
 
+        User user = em.find(User.class, uid);
+        Group group = em.find(Group.class, role);
+        if(user.getGroups().contains(group)){
+            System.out.println("Did we get here?");
+            user.groups.remove(group);
+            em.merge(user);
+        }
+        /* i had to cut this out because while it worked, i had to redeploy the project for the changes to take place
         try (Connection c = dataSource.getConnection();
                 PreparedStatement psg = c.prepareStatement(DELETE_USERGROUP)) {
             psg.setString(1, role);
@@ -332,8 +351,9 @@ public class AuthenticationService {
             log.log(Level.SEVERE, null, ex);
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
-        System.out.println(em.createNamedQuery(User.FIND_ALL_USERS, User.class).getResultList());
-        return Response.ok().build();
+        */
+        //System.out.println(em.createNamedQuery(User.FIND_ALL_USERS, User.class).getResultList());
+        return Response.ok(user).build();
     }
 
     /**
@@ -370,4 +390,6 @@ public class AuthenticationService {
             return Response.ok().build();
         }
     }
+    
+
 }
