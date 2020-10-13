@@ -87,7 +87,7 @@ public class ListingService {
             @NotNull @NotEmpty(message = ("Description cannot be empty"))@FormDataParam("description") String description,
             @NotNull @Positive (message = ("Must be a valid price")) @FormDataParam("price") int price,
             FormDataMultiPart multiPart){
-        
+        /*
         MediaObject photo = null;
         Listing listing = null;
         try{
@@ -114,7 +114,10 @@ public class ListingService {
         catch(IOException ex){
             Logger.getLogger(ListingService.class.getName()).log(Level.SEVERE, null, ex);
         }
+
         return Response.ok(listing).build();
+*/
+        return Response.ok().build();
     }
     
     
